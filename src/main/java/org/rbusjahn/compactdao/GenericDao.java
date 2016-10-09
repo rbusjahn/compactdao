@@ -10,7 +10,6 @@ import java.util.concurrent.Callable;
 
 import org.apache.log4j.Logger;
 
-import com.j256.ormlite.dao.CloseableIterator;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.field.DatabaseField;
@@ -19,14 +18,12 @@ import com.j256.ormlite.misc.TransactionManager;
 import com.j256.ormlite.stmt.PreparedQuery;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.Where;
-import com.j256.ormlite.support.DatabaseResults;
 import com.j256.ormlite.table.DatabaseTable;
 import com.j256.ormlite.table.TableUtils;
-import com.jcabi.aspects.Loggable;
 
 import javafx.util.Pair;
 
-public class GenericDao<T> implements IGenericDao<T>{
+public class GenericDao<T> implements IGenericDao<T> {
 
 	protected static Logger LOG = Logger.getLogger(GenericDao.class);
 	protected static String driver = "org.apache.derby.jdbc.EmbeddedDriver";
@@ -77,6 +74,7 @@ public class GenericDao<T> implements IGenericDao<T>{
 		}
 	}
 
+	@Override
 	public void init(ConnectionSettings settings) {
 		try {
 			Class.forName(driver).newInstance();
@@ -118,6 +116,7 @@ public class GenericDao<T> implements IGenericDao<T>{
 		}
 	}
 
+	@Override
 	public void save(T t) {
 		try {
 			dao.createOrUpdate(t);
@@ -126,6 +125,7 @@ public class GenericDao<T> implements IGenericDao<T>{
 		}
 	}
 
+	@Override
 	public void delete(T t) {
 		try {
 			dao.delete(t);
@@ -134,6 +134,7 @@ public class GenericDao<T> implements IGenericDao<T>{
 		}
 	}
 
+	@Override
 	public T getById(Long id) {
 		T value = null;
 		try {
@@ -145,6 +146,7 @@ public class GenericDao<T> implements IGenericDao<T>{
 		return value;
 	}
 
+	@Override
 	public List<T> getByIdList(List<Long> ids) {
 		List<T> list = new ArrayList<>();
 		QueryBuilder<T, Long> builder = dao.queryBuilder();
@@ -161,7 +163,7 @@ public class GenericDao<T> implements IGenericDao<T>{
 		return list;
 	}
 
-	@Loggable(Loggable.DEBUG)
+	@Override
 	public void createTable() {
 		createTable(false);
 	}
@@ -187,6 +189,7 @@ public class GenericDao<T> implements IGenericDao<T>{
 		}
 	}
 
+	@Override
 	public void save(List<T> list) {
 		try {
 			dao.callBatchTasks(new Callable<Void>() {
@@ -201,10 +204,10 @@ public class GenericDao<T> implements IGenericDao<T>{
 		} catch (final Exception e) {
 			throw new RuntimeException(e.getMessage(), e);
 		}
-		
-		
+
 	}
 
+	@Override
 	public List<T> findAll() {
 		List<T> result = Collections.emptyList();
 		try {
@@ -254,6 +257,7 @@ public class GenericDao<T> implements IGenericDao<T>{
 		return connectionSource;
 	}
 
+	@Override
 	public void doInTransaction(Callable<?> callable) {
 		try {
 			TransactionManager.callInTransaction(connectionSource, callable);
@@ -279,63 +283,59 @@ public class GenericDao<T> implements IGenericDao<T>{
 					where = where.and().eq(columnName, value);
 				}
 			}
-			
-			
-			
-			//count
+
+			// count
 			final long maxEntriesFound = builder.countOf();
 			response.setMaxEntriesFound(maxEntriesFound);
-			
-			//select
+
+			// select
 			builder = builder.setCountOf(false);
-			long offset = from * pageSize;
+			final long offset = from * pageSize;
 			builder = builder.offset(offset);
 			final long pageLimit = pageSize;
 			builder = builder.limit(pageLimit);
-			
+
 			builder = builder.orderBy(getIdColumn(), true);
-			PreparedQuery<T>query = builder.prepare();
-			
+			final PreparedQuery<T> query = builder.prepare();
+
 			LOG.info("query:" + query.getStatement());
-			long start = System.currentTimeMillis();
-			
-			
-			//1.
+			final long start = System.currentTimeMillis();
+
+			// 1.
 			List<T> list = new ArrayList<>();
 			list = dao.query(query);
-			
-			//2.
-			//dao.executeRaw(query.getStatement());
-			
-			//3.
-			
-			
-//			List<T> list = new ArrayList<>();
-//			CloseableIterator<T> iter = dao.iterator(query);
-//			DatabaseResults results = iter.getRawResults();
-//			while(iter.hasNext()){
-//				T item = iter.next();
-//				list.add(item);
-//			}
-//			iter.close();
-//			
-//			
-			
-			long time = System.currentTimeMillis() - start;
+
+			// 2.
+			// dao.executeRaw(query.getStatement());
+
+			// 3.
+
+			// List<T> list = new ArrayList<>();
+			// CloseableIterator<T> iter = dao.iterator(query);
+			// DatabaseResults results = iter.getRawResults();
+			// while(iter.hasNext()){
+			// T item = iter.next();
+			// list.add(item);
+			// }
+			// iter.close();
+			//
+			//
+
+			final long time = System.currentTimeMillis() - start;
 			LOG.debug("query time:" + time);
 			response.setResultList(list);
-				
-		} catch (SQLException e) {
-			throw new RuntimeException(e.getMessage(),e);
+
+		} catch (final SQLException e) {
+			throw new RuntimeException(e.getMessage(), e);
 		}
-		
+
 		return response;
 	}
-	
-	public void enableCache(){
+
+	public void enableCache() {
 		try {
 			dao.setObjectCache(true);
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
