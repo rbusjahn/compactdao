@@ -20,8 +20,6 @@ import org.junit.Test;
 import org.rbusjahn.compactdao.example.app.AccountModel;
 import org.rbusjahn.compactdao.example.app.AccountModelDao;
 
-import com.j256.ormlite.support.DatabaseConnection;
-
 public class Performance {
 
 	private Logger LOG = Logger.getLogger(getClass());

@@ -19,18 +19,18 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jdk.version>1.8</jdk.version>
 	</properties>
+	
 	<distributionManagement>
-		<snapshotRepository>
-			<id>devlocal</id>
-			<name>devlocal nexus</name>
-			<url>http://myserver:8081/nexus/content/repositories/devlocal</url>
-		</snapshotRepository>
 		<repository>
-			<id>devlocal</id>
-			<name>devlocal nexus</name>
-			<url>http://myserver:8081/nexus/content/repositories/devlocal</url>
+			<id>nexus-3db</id>
+			<name>nexus-3db</name>
+			<url>http://ubuntu-server:8088/nexus/content/repositories/dev3db-release/</url>
 		</repository>
-
+		<snapshotRepository>
+			<id>nexus-3db</id>
+			<name>nexus-3db</name>
+			<url>http://ubuntu-server:8088/nexus/content/repositories/dev3db-snapshot/</url>
+		</snapshotRepository>
 	</distributionManagement>
 
 	<reporting>
