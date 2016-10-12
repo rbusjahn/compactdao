@@ -36,7 +36,8 @@ public class DatabaseUpdateRunnerTestDemo {
 
 		}
 
-		cut.runDatabaseUpdates(updates);
+		List<DatabaseUpdate> failedUpdates = new ArrayList<>();
+		cut.runDatabaseUpdates(updates, failedUpdates);
 
 	}
 

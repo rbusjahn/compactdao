@@ -32,7 +32,7 @@ public class PersonModelDaoTest {
 		cut = new PersonModelDao();
 		cut.createTable();
 		databaseUpdate = new DatabaseUpdateRunner();
-		databaseUpdate.runDatabaseUpdates(null);
+		databaseUpdate.runDatabaseUpdates(null, null);
 
 	}
 

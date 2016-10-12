@@ -181,7 +181,7 @@ public class GenericDao<T> implements IGenericDao<T> {
 
 	public void runUpdateSql(String statement) {
 		try {
-
+			dao.clearObjectCache();
 			dao.executeRawNoArgs(statement);
 
 		} catch (final Exception e) {

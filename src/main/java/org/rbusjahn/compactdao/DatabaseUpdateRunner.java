@@ -5,7 +5,6 @@ import java.sql.Savepoint;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import org.apache.log4j.Logger;
 
@@ -47,7 +46,7 @@ public class DatabaseUpdateRunner {
 			for (int i = offset; i < updates.size(); i++) {
 				final DatabaseUpdate update = updates.get(i);
 				try {
-					LOG.debug("running update: " + update);
+					LOG.debug("testing update: " + update);
 					final int resultFlags = DatabaseConnection.DEFAULT_RESULT_FLAGS;
 					final int result = connection.executeStatement(update.getUpdateCommand(), resultFlags);
 					LOG.debug("result: " + result);
@@ -63,7 +62,7 @@ public class DatabaseUpdateRunner {
 
 	}
 
-	public void runDatabaseUpdates(List<DatabaseUpdate> updates) {
+	public void runDatabaseUpdates(List<DatabaseUpdate> updates, List<DatabaseUpdate> failedUpdates) {
 		if ((updates == null) || updates.isEmpty()) {
 			return;
 		}
@@ -80,29 +79,63 @@ public class DatabaseUpdateRunner {
 			final int offset = updates.size() - updatesLeft;
 			for (int i = offset; i < updates.size(); i++) {
 				final DatabaseUpdate update = updates.get(i);
-				LOG.debug("running update: " + update);
-				final Callable<Void> task = new Callable<Void>() {
 
-					@Override
-					public Void call() throws Exception {
+				DatabaseConnection connection = null;
+
+				try {
+
+					// connection =
+					// dao.getConnectionSource().getReadWriteConnection();
+					// connection.setAutoCommit(false);
+
+					// final Savepoint sp =
+					// connection.setSavePoint("before_update_database_updates");
+
+					try {
+						LOG.debug("running update: " + update);
+						// final int resultFlags =
+						// DatabaseConnection.DEFAULT_RESULT_FLAGS;
+						// final int result =
+						// connection.executeStatement(update.getUpdateCommand(),
+						// resultFlags);
+						// LOG.debug("result: " + result);
+
 						dao.runUpdateSql(update.getUpdateCommand());
+
 						dao.save(update);
-						return null;
+
+						// connection.commit(sp);
+					} catch (final Exception e) {
+						LOG.error(e.getMessage(), e);
+						failedUpdates.add(update);
+						// connection.rollback(sp);
 					}
-				};
 
-				dao.doInTransaction(task);
 
+				} catch (Exception e) {
+					LOG.error(e.getCause(), e);
+					// closeConnection(connection);
+				}
 			}
 		}
 
+	}
+
+	private void closeConnection(DatabaseConnection connection) {
+		if (connection != null) {
+			try {
+				connection.close();
+			} catch (Exception e2) {
+				LOG.error(e2.getMessage(), e2);
+			}
+		}
 	}
 
 	public void startUpdateProcess(List<DatabaseUpdate> updates, List<DatabaseUpdate> failedUpdates) {
 		try {
 			verifyDatabaseUpdates(updates, failedUpdates);
 			if (failedUpdates.isEmpty()) {
-				runDatabaseUpdates(updates);
+				runDatabaseUpdates(updates, failedUpdates);
 			}
 		} catch (final Exception e) {
 			throw new RuntimeException(e.getMessage(), e);
