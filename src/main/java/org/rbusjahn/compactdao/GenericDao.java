@@ -34,7 +34,7 @@ public class GenericDao<T> implements IGenericDao<T> {
 	private String tableName;
 	private String idColumn;
 	private JdbcConnectionSource connectionSource;
-	private static JdbcConnectionSource defaultJdbcConnectionSource;
+	private JdbcConnectionSource defaultJdbcConnectionSource;
 
 	public GenericDao(Class<T> t, ConnectionSettings settings) {
 		try {
@@ -90,7 +90,7 @@ public class GenericDao<T> implements IGenericDao<T> {
 		}
 	}
 
-	public static JdbcConnectionSource getDefaultJdbcConnectionSource() {
+	public JdbcConnectionSource getDefaultJdbcConnectionSource() {
 		if (defaultJdbcConnectionSource == null) {
 			if (DaoEnvironment.useInMemoryDatabase()) {
 				defaultJdbcConnectionSource = getJdbcConnectionSource(new InMemoryConnectionSettings());
