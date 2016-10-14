@@ -28,7 +28,7 @@ public class GenericDao<T> implements IGenericDao<T> {
 	protected static Logger LOG = Logger.getLogger(GenericDao.class);
 	protected static String driver = "org.apache.derby.jdbc.EmbeddedDriver";
 
-	private Dao<T, Long> dao;
+	protected Dao<T, Long> dao;
 
 	protected Class<?> clazz;
 	private String tableName;
@@ -298,31 +298,9 @@ public class GenericDao<T> implements IGenericDao<T> {
 			builder = builder.orderBy(getIdColumn(), true);
 			final PreparedQuery<T> query = builder.prepare();
 
-			LOG.info("query:" + query.getStatement());
-			final long start = System.currentTimeMillis();
-
-			// 1.
 			List<T> list = new ArrayList<>();
 			list = dao.query(query);
 
-			// 2.
-			// dao.executeRaw(query.getStatement());
-
-			// 3.
-
-			// List<T> list = new ArrayList<>();
-			// CloseableIterator<T> iter = dao.iterator(query);
-			// DatabaseResults results = iter.getRawResults();
-			// while(iter.hasNext()){
-			// T item = iter.next();
-			// list.add(item);
-			// }
-			// iter.close();
-			//
-			//
-
-			final long time = System.currentTimeMillis() - start;
-			LOG.debug("query time:" + time);
 			response.setResultList(list);
 
 		} catch (final SQLException e) {
