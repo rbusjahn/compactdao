@@ -196,7 +196,7 @@ public class GenericDao<T> implements IGenericDao<T> {
 				@Override
 				public Void call() throws Exception {
 					for (final T t : list) {
-						dao.create(t);
+						dao.createOrUpdate(t);
 					}
 					return null;
 				}
