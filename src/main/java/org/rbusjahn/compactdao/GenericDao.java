@@ -25,7 +25,7 @@ import javafx.util.Pair;
 
 public class GenericDao<T> implements IGenericDao<T> {
 
-	protected static Logger LOG = Logger.getLogger(GenericDao.class);
+	protected static Logger log = Logger.getLogger(GenericDao.class);
 	protected static String driver = "org.apache.derby.jdbc.EmbeddedDriver";
 
 	protected Dao<T, Long> dao;
@@ -82,7 +82,7 @@ public class GenericDao<T> implements IGenericDao<T> {
 			final String databaseUrl = MessageFormat.format("jdbc:derby:{0};{1}", settings.getDatabaseFolderName(),
 					settings.getDerbyConnectionParameter());
 
-			LOG.debug("using database url: " + databaseUrl);
+			log.debug("using database url: " + databaseUrl);
 
 			this.connectionSource = new JdbcConnectionSource(databaseUrl);
 		} catch (final Exception e) {
@@ -108,7 +108,7 @@ public class GenericDao<T> implements IGenericDao<T> {
 			final String databaseUrl = MessageFormat.format("jdbc:derby:{0};{1}", settings.getDatabaseFolderName(),
 					settings.getDerbyConnectionParameter());
 
-			LOG.debug("using database url: " + databaseUrl);
+			log.debug("using database url: " + databaseUrl);
 
 			return new JdbcConnectionSource(databaseUrl);
 		} catch (final Exception e) {
@@ -140,7 +140,6 @@ public class GenericDao<T> implements IGenericDao<T> {
 		try {
 			value = dao.queryForId(id);
 		} catch (final SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return value;
@@ -157,7 +156,6 @@ public class GenericDao<T> implements IGenericDao<T> {
 			final PreparedQuery<T> query = builder.prepare();
 			list = dao.query(query);
 		} catch (final SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return list;
@@ -172,7 +170,7 @@ public class GenericDao<T> implements IGenericDao<T> {
 		try {
 			TableUtils.createTableIfNotExists(dao.getConnectionSource(), this.clazz);
 		} catch (final SQLException e) {
-			LOG.warn(e.getMessage());
+			log.warn(e.getMessage());
 			if (throwError) {
 				throw new RuntimeException(e.getMessage(), e);
 			}
@@ -185,7 +183,7 @@ public class GenericDao<T> implements IGenericDao<T> {
 			dao.executeRawNoArgs(statement);
 
 		} catch (final Exception e) {
-			LOG.error(e.getMessage(), e);
+			log.error(e.getMessage(), e);
 		}
 	}
 
@@ -216,7 +214,7 @@ public class GenericDao<T> implements IGenericDao<T> {
 			final PreparedQuery<T> query = builder.prepare();
 			result = dao.query(query);
 		} catch (final SQLException e) {
-			LOG.error(e.getMessage(), e);
+			log.error(e.getMessage(), e);
 			throw new RuntimeException(e.getMessage(), e);
 		}
 		return result;
@@ -262,7 +260,7 @@ public class GenericDao<T> implements IGenericDao<T> {
 		try {
 			TransactionManager.callInTransaction(connectionSource, callable);
 		} catch (final Exception e) {
-			LOG.error(e.getMessage(), e);
+			log.error(e.getMessage(), e);
 			throw new RuntimeException(e.getMessage(), e);
 		}
 	}
@@ -314,7 +312,6 @@ public class GenericDao<T> implements IGenericDao<T> {
 		try {
 			dao.setObjectCache(true);
 		} catch (final SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

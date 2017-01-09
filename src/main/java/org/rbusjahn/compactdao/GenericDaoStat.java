@@ -8,7 +8,7 @@ import javafx.util.Pair;
 
 public class GenericDaoStat<T> extends GenericDao<T> {
 
-	private final Logger LOG = Logger.getLogger(getClass());
+	private final Logger log = Logger.getLogger(getClass());
 	private final DatabaseStatDao statDao;
 
 	public GenericDaoStat(Class<T> t, ConnectionSettings settings) {
@@ -34,7 +34,7 @@ public class GenericDaoStat<T> extends GenericDao<T> {
 
 	protected void logExecutionTime(long time, String method) {
 		final String className = super.clazz.getName();
-		LOG.info("execution time: " + className + "." + method + ":" + time);
+		log.info("execution time: " + className + "." + method + ":" + time);
 		final DatabaseStat stat = new DatabaseStat();
 		stat.setClassName(super.clazz.getName());
 		stat.setExecutionTime(time);

@@ -17,7 +17,7 @@ import org.rbusjahn.compactdao.example.app.PersonModelDao;
 import com.j256.ormlite.support.DatabaseConnection;
 
 public class PersonModelDaoTest {
-	private final Logger LOG = Logger.getLogger(getClass());
+	private final Logger log = Logger.getLogger(getClass());
 
 	protected PersonModelDao getCut() {
 		return new PersonModelDao();
@@ -41,7 +41,7 @@ public class PersonModelDaoTest {
 
 		final int itemsBefore = cut.findAll().size();
 
-		LOG.debug("items:" + itemsBefore);
+		log.debug("items:" + itemsBefore);
 
 		final PersonModel person = new PersonModel();
 		cut.save(person);
@@ -65,7 +65,7 @@ public class PersonModelDaoTest {
 		Assert.assertEquals(person.getFirstname(), reloaded.getFirstname());
 
 		final int items = cut.findAll().size();
-		LOG.debug("items:" + items);
+		log.debug("items:" + items);
 
 	}
 

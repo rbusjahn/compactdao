@@ -7,7 +7,7 @@ import java.util.concurrent.Callable;
 import org.apache.log4j.Logger;
 
 public class DatabaseStatistics {
-	private Logger LOG = Logger.getLogger(getClass());
+	private Logger log = Logger.getLogger(getClass());
 	
 
 	private DatabaseStatDao dao = new DatabaseStatDao();
@@ -35,14 +35,14 @@ public class DatabaseStatistics {
 		StackTraceElement stackTraceElement = new Exception().getStackTrace()[1];
 		String className = stackTraceElement.getClassName();
 		String methodName = stackTraceElement.getMethodName();
-		LOG.info("classname:" + className);
-		LOG.info("method:" + methodName);
+		log.info("classname:" + className);
+		log.info("method:" + methodName);
 		Long start = System.currentTimeMillis();
 		T result = null;
 		try {
 			result = task.call();
 			Long time =  System.currentTimeMillis() - start;
-			LOG.info("time:" + time);
+			log.info("time:" + time);
 			DatabaseStat stat = new DatabaseStat();
 			stat.setClassName(className);
 			stat.setMethodName(methodName);

@@ -17,7 +17,7 @@ import javafx.util.Pair;
 
 public class AccountModelDaoTest {
 
-	private final Logger LOG = Logger.getLogger(getClass());
+	private final Logger log = Logger.getLogger(getClass());
 
 	private AccountModelDao cut;
 
@@ -55,7 +55,7 @@ public class AccountModelDaoTest {
 		final List<Pair<String, Object>> pattern = new ArrayList<>();
 		pattern.add(new Pair<String, Object>("number", "NumberB"));
 
-		LOG.debug("testFindByPattern");
+		log.debug("testFindByPattern");
 
 		// WHEN
 		final PagedResponse<AccountModel> result = cut.findByPatternPaged(pattern, 1, 5);

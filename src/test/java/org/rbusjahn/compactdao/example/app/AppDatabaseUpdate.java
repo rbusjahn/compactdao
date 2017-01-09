@@ -13,7 +13,7 @@ public class AppDatabaseUpdate {
 
 	private final DatabaseUpdateRunner runner = new DatabaseUpdateRunner();
 
-	private final Logger LOG = Logger.getLogger(getClass());
+	private final Logger log = Logger.getLogger(getClass());
 
 	public void onApplicationStart() {
 
@@ -30,7 +30,7 @@ public class AppDatabaseUpdate {
 
 		if (!failedUpdates.isEmpty()) {
 			for (final DatabaseUpdate updateError : failedUpdates) {
-				LOG.error("failed update: " + updateError);
+				log.error("failed update: " + updateError);
 			}
 		}
 	}

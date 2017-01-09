@@ -17,7 +17,7 @@ import com.j256.ormlite.support.DatabaseConnection;
 
 public class DatabaseUpdateRunnerTestDemo {
 
-	private final Logger LOG = Logger.getLogger(getClass());
+	private final Logger log = Logger.getLogger(getClass());
 
 	@Test
 	public void testUpdates() {
@@ -90,7 +90,7 @@ public class DatabaseUpdateRunnerTestDemo {
 			final String statementStr = "create table \"DemoEntity\" (\"id\" BIGINT)";
 			final int resultFlags = DatabaseConnection.DEFAULT_RESULT_FLAGS;
 			final int result = connection.executeStatement(statementStr, resultFlags);
-			LOG.debug("result: " + result);
+			log.debug("result: " + result);
 
 		} catch (final Exception e) {
 			e.printStackTrace();
@@ -102,10 +102,10 @@ public class DatabaseUpdateRunnerTestDemo {
 		try {
 			final DatabaseConnection conn2 = dao.getConnectionSource().getReadWriteConnection();
 			final boolean tableExists = conn2.isTableExists("DemoEntity");
-			LOG.debug("table exists: " + tableExists);
+			log.debug("table exists: " + tableExists);
 			Assert.assertFalse(tableExists);
 		} catch (final Exception e) {
-			LOG.error(e.getMessage());
+			log.error(e.getMessage());
 		}
 
 	}

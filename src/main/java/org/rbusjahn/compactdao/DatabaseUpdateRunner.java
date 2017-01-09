@@ -12,7 +12,7 @@ import com.j256.ormlite.support.DatabaseConnection;
 
 public class DatabaseUpdateRunner {
 
-	private final Logger LOG = Logger.getLogger(getClass());
+	private final Logger log = Logger.getLogger(getClass());
 	private DatabaseVersionDao dao;
 
 	public DatabaseUpdateRunner() {
@@ -46,12 +46,12 @@ public class DatabaseUpdateRunner {
 			for (int i = offset; i < updates.size(); i++) {
 				final DatabaseUpdate update = updates.get(i);
 				try {
-					LOG.debug("testing update: " + update);
+					log.debug("testing update: " + update);
 					final int resultFlags = DatabaseConnection.DEFAULT_RESULT_FLAGS;
 					final int result = connection.executeStatement(update.getUpdateCommand(), resultFlags);
-					LOG.debug("result: " + result);
+					log.debug("result: " + result);
 				} catch (final Exception e) {
-					LOG.error(e.getMessage(), e);
+					log.error(e.getMessage(), e);
 					brokenUpdates.add(update);
 				}
 			}
@@ -80,55 +80,20 @@ public class DatabaseUpdateRunner {
 			for (int i = offset; i < updates.size(); i++) {
 				final DatabaseUpdate update = updates.get(i);
 
-				DatabaseConnection connection = null;
-
-				try {
-
-					// connection =
-					// dao.getConnectionSource().getReadWriteConnection();
-					// connection.setAutoCommit(false);
-
-					// final Savepoint sp =
-					// connection.setSavePoint("before_update_database_updates");
-
 					try {
-						LOG.debug("running update: " + update);
-						// final int resultFlags =
-						// DatabaseConnection.DEFAULT_RESULT_FLAGS;
-						// final int result =
-						// connection.executeStatement(update.getUpdateCommand(),
-						// resultFlags);
-						// LOG.debug("result: " + result);
+						log.debug("running update: " + update);
 
 						dao.runUpdateSql(update.getUpdateCommand());
 
 						dao.save(update);
 
-						// connection.commit(sp);
 					} catch (final Exception e) {
-						LOG.error(e.getMessage(), e);
+						log.error(e.getMessage(), e);
 						failedUpdates.add(update);
-						// connection.rollback(sp);
 					}
-
-
-				} catch (Exception e) {
-					LOG.error(e.getCause(), e);
-					// closeConnection(connection);
-				}
 			}
 		}
 
-	}
-
-	private void closeConnection(DatabaseConnection connection) {
-		if (connection != null) {
-			try {
-				connection.close();
-			} catch (Exception e2) {
-				LOG.error(e2.getMessage(), e2);
-			}
-		}
 	}
 
 	public void startUpdateProcess(List<DatabaseUpdate> updates, List<DatabaseUpdate> failedUpdates) {

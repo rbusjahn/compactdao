@@ -22,7 +22,7 @@ import org.rbusjahn.compactdao.example.app.AccountModelDao;
 
 public class Performance {
 
-	private Logger LOG = Logger.getLogger(getClass());
+	private Logger log = Logger.getLogger(getClass());
 	
 	private AccountModelDao cut;
 	
@@ -50,7 +50,7 @@ public class Performance {
 		cut.save(list);
 		
 		long time = System.currentTimeMillis() - start;
-		LOG.info("time:" + time);
+		log.info("time:" + time);
 		
 		
 	}
@@ -93,7 +93,7 @@ public class Performance {
 		List<Long> timeStats = Arrays.asList(timeList);
 		Collections.sort(timeStats);
 		for(Long t : timeStats){
-			LOG.info("time:" + t);
+			log.info("time:" + t);
 		}
 		
 	}
