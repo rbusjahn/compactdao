@@ -184,6 +184,7 @@ public class GenericDao<T> implements IGenericDao<T> {
 
 		} catch (final Exception e) {
 			log.error(e.getMessage(), e);
+			throw new RuntimeException(e.getMessage(), e);
 		}
 	}
 
@@ -240,9 +241,9 @@ public class GenericDao<T> implements IGenericDao<T> {
 		}
 		for (final Field field : clazz.getDeclaredFields()) {
 			final DatabaseField databaseField = field.getAnnotation(DatabaseField.class);
-			if ((databaseField != null) && databaseField.generatedId()) {
+			if (databaseField != null && databaseField.generatedId()) {
 				idColumn = field.getName();
-				if ((databaseField.columnName() != null) && (databaseField.columnName().length() > 0)) {
+				if (databaseField.columnName() != null && databaseField.columnName().length() > 0) {
 					idColumn = databaseField.columnName();
 				}
 				break;
@@ -272,7 +273,7 @@ public class GenericDao<T> implements IGenericDao<T> {
 		QueryBuilder<T, Long> builder = dao.queryBuilder();
 
 		try {
-			if ((pattern != null) && !pattern.isEmpty()) {
+			if (pattern != null && !pattern.isEmpty()) {
 				Where<T, Long> where = builder.where();
 				where = where.eq(pattern.get(0).getKey(), pattern.get(0).getValue());
 				for (int i = 1; i < pattern.size(); i++) {
