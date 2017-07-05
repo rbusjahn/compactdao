@@ -2,6 +2,7 @@ package org.rbusjahn.compactdao;
 
 import java.sql.SQLException;
 import java.sql.Savepoint;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -26,16 +27,10 @@ public class DatabaseUpdateRunner {
 
 	public void verifyDatabaseUpdates(List<DatabaseUpdate> updates, List<DatabaseUpdate> brokenUpdates)
 			throws SQLException {
-		Collections.sort(updates, new Comparator<DatabaseUpdate>() {
-			@Override
-			public int compare(DatabaseUpdate o1, DatabaseUpdate o2) {
-				return o1.getId().compareTo(o2.getId());
-			}
-		});
+
 		final List<DatabaseUpdate> appliedUpdates = dao.findAll();
-		final int updatesLeft = updates.size() - appliedUpdates.size();
-		if (updatesLeft > 0) {
-			final int offset = updates.size() - updatesLeft;
+		List<DatabaseUpdate> openUpdates = getOpenUpdates(appliedUpdates, updates);
+		if (openUpdates.size() > 0) {
 
 			final DatabaseConnection connection = dao.getConnectionSource().getReadWriteConnection();
 
@@ -43,8 +38,7 @@ public class DatabaseUpdateRunner {
 
 			final Savepoint sp = connection.setSavePoint("before_verify_database_updates");
 
-			for (int i = offset; i < updates.size(); i++) {
-				final DatabaseUpdate update = updates.get(i);
+			for (DatabaseUpdate update : openUpdates) {
 				try {
 					log.debug("testing update: " + update);
 					final int resultFlags = DatabaseConnection.DEFAULT_RESULT_FLAGS;
@@ -62,8 +56,25 @@ public class DatabaseUpdateRunner {
 
 	}
 
+	protected List<DatabaseUpdate> getOpenUpdates(List<DatabaseUpdate> appliedUpdates, List<DatabaseUpdate> updates) {
+		List<DatabaseUpdate> list = new ArrayList<>();
+		for (DatabaseUpdate newUpdate : updates) {
+			boolean foundById = false;
+			for (DatabaseUpdate existingUpdate : appliedUpdates) {
+				if (newUpdate.getId().equals(existingUpdate.getId())) {
+					foundById = true;
+					break;
+				}
+			}
+			if (!foundById) {
+				list.add(newUpdate);
+			}
+		}
+		return list;
+	}
+
 	public void runDatabaseUpdates(List<DatabaseUpdate> updates, List<DatabaseUpdate> failedUpdates) {
-		if ((updates == null) || updates.isEmpty()) {
+		if (updates == null || updates.isEmpty()) {
 			return;
 		}
 		Collections.sort(updates, new Comparator<DatabaseUpdate>() {
@@ -80,17 +91,17 @@ public class DatabaseUpdateRunner {
 			for (int i = offset; i < updates.size(); i++) {
 				final DatabaseUpdate update = updates.get(i);
 
-					try {
-						log.debug("running update: " + update);
+				try {
+					log.debug("running update: " + update);
 
-						dao.runUpdateSql(update.getUpdateCommand());
+					dao.runUpdateSql(update.getUpdateCommand());
 
-						dao.save(update);
+					dao.save(update);
 
-					} catch (final Exception e) {
-						log.error(e.getMessage(), e);
-						failedUpdates.add(update);
-					}
+				} catch (final Exception e) {
+					log.error(e.getMessage(), e);
+					failedUpdates.add(update);
+				}
 			}
 		}
 
