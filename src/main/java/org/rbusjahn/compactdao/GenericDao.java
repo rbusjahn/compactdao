@@ -124,6 +124,14 @@ public class GenericDao<T> implements IGenericDao<T> {
 			throw new RuntimeException(e.getMessage(), e);
 		}
 	}
+	
+	public void insert(T t){
+		try {
+			dao.create(t);
+		} catch (Exception e) {
+			throw new RuntimeException(e.getMessage(), e);
+		}
+	}
 
 	@Override
 	public void delete(T t) {
