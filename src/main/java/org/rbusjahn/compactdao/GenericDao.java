@@ -21,8 +21,6 @@ import com.j256.ormlite.stmt.Where;
 import com.j256.ormlite.table.DatabaseTable;
 import com.j256.ormlite.table.TableUtils;
 
-import javafx.util.Pair;
-
 public class GenericDao<T> implements IGenericDao<T> {
 
 	protected static Logger log = Logger.getLogger(GenericDao.class);
@@ -124,8 +122,8 @@ public class GenericDao<T> implements IGenericDao<T> {
 			throw new RuntimeException(e.getMessage(), e);
 		}
 	}
-	
-	public void insert(T t){
+
+	public void insert(T t) {
 		try {
 			dao.create(t);
 		} catch (Exception e) {

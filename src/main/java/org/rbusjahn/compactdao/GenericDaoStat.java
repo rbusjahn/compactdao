@@ -4,8 +4,6 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import javafx.util.Pair;
-
 public class GenericDaoStat<T> extends GenericDao<T> {
 
 	private final Logger log = Logger.getLogger(getClass());

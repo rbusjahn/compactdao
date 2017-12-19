@@ -10,10 +10,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.rbusjahn.compactdao.DaoEnvironment;
 import org.rbusjahn.compactdao.PagedResponse;
+import org.rbusjahn.compactdao.Pair;
 import org.rbusjahn.compactdao.example.app.AccountModel;
 import org.rbusjahn.compactdao.example.app.AccountModelDao;
-
-import javafx.util.Pair;
 
 public class AccountModelDaoTest {
 
