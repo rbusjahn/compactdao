@@ -8,30 +8,26 @@ import org.apache.log4j.Logger;
 
 public class DatabaseStatistics {
 	private Logger log = Logger.getLogger(getClass());
-	
 
 	private DatabaseStatDao dao = new DatabaseStatDao();
-	private Map< String, Long> executionTimes = new HashMap<>();
-	
-	public String startMethod(Class<?> c, String method){
-		String key = c.getCanonicalName()+"."+method;
+	private Map<String, Long> executionTimes = new HashMap<>();
+
+	public String startMethod(Class<?> c, String method) {
+		String key = c.getCanonicalName() + "." + method;
 		Long now = getNow();
 		executionTimes.put(key, now);
 		return key;
 	}
-	
-	public void endMethod(String method){
+
+	public void endMethod(String method) {
 		Long time = executionTimes.get(method);
-		if(time != null){
-			Long now = getNow();
-			Long duration = now - time;
-			DatabaseStat stat = new DatabaseStat();
-			
+		if (time != null) {
+
 		}
-		
+
 	}
 
-	public  <T> T logExecutionTime(Callable<T> task) {
+	public <T> T logExecutionTime(Callable<T> task) {
 		StackTraceElement stackTraceElement = new Exception().getStackTrace()[1];
 		String className = stackTraceElement.getClassName();
 		String methodName = stackTraceElement.getMethodName();
@@ -41,7 +37,7 @@ public class DatabaseStatistics {
 		T result = null;
 		try {
 			result = task.call();
-			Long time =  System.currentTimeMillis() - start;
+			Long time = System.currentTimeMillis() - start;
 			log.info("time:" + time);
 			DatabaseStat stat = new DatabaseStat();
 			stat.setClassName(className);
@@ -50,11 +46,11 @@ public class DatabaseStatistics {
 			stat.setTimeStamp(start);
 			dao.save(stat);
 		} catch (Exception e) {
-			throw new RuntimeException(e.getMessage(),e);
+			throw new RuntimeException(e.getMessage(), e);
 		}
 		return result;
 	}
-	
+
 	private Long getNow() {
 		Long now = System.nanoTime();
 		return now;
@@ -63,7 +59,5 @@ public class DatabaseStatistics {
 	public void setDao(DatabaseStatDao dao) {
 		this.dao = dao;
 	}
-	
 
-	
 }

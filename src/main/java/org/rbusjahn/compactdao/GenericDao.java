@@ -307,7 +307,7 @@ public class GenericDao<T> implements IGenericDao<T> {
 			list = dao.query(query);
 
 			response.setResultList(list);
-
+			
 		} catch (final SQLException e) {
 			throw new RuntimeException(e.getMessage(), e);
 		}
