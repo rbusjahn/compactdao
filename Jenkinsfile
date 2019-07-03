@@ -1,10 +1,9 @@
 pipeline {
   agent any
   stages {
-    stage('error') {
+    stage('test') {
       steps {
         sh 'mvn clean test'
-        timestamps()
       }
     }
   }
