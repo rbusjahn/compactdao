@@ -23,52 +23,49 @@ import org.rbusjahn.compactdao.example.app.AccountModelDao;
 public class Performance {
 
 	private Logger log = Logger.getLogger(getClass());
-	
+
 	private AccountModelDao cut;
-	
+
 	@Before
 	public void setup() {
 		cut = new AccountModelDao();
-		
+
 		cut.createTable();
 	}
-	
+
 	@Test
-	public void testWrite(){
+	public void testWrite() {
 		int N = 1000 * 10;
-		
+
 		List<AccountModel> list = new ArrayList<>();
-		for(int i = 0; i < N; i++){
+		for (int i = 0; i < N; i++) {
 			AccountModel model = new AccountModel();
 			model.setDescription(getTestData());
 			model.setNumber(getTestData());
 			list.add(model);
 		}
-		
+
 		long start = System.currentTimeMillis();
-		
+
 		cut.save(list);
-		
+
 		long time = System.currentTimeMillis() - start;
 		log.info("time:" + time);
-		
-		
+
 	}
-	
+
 	@Test
-	public void testRead() throws SQLException, InterruptedException, ExecutionException{
-		
-		//cut.enableCache();
-		
+	public void testRead() throws SQLException, InterruptedException, ExecutionException {
+
 		ExecutorService service = Executors.newFixedThreadPool(5);
-		List<Future<Long>>tasks = new ArrayList<>();
-		Random rand = new Random();
-		final int[] counter = new int[]{0};
-		
+		List<Future<Long>> tasks = new ArrayList<>();
+		new Random();
+		final int[] counter = new int[] { 0 };
+
 		int M = 10;
-		
-		for(int i = 0; i < M; i++) {
-			
+
+		for (int i = 0; i < M; i++) {
+
 			Future<Long> task = service.submit(new Callable<Long>() {
 
 				@Override
@@ -76,29 +73,29 @@ public class Performance {
 					long start = System.currentTimeMillis();
 					int a = 100 + counter[0]++;
 					int b = 25 + counter[0]++;
-					List<AccountModel> list = cut.findByPatternPaged(null, a, b).getResultList();
+					cut.findByPatternPaged(null, a, b).getResultList();
 					long time = System.currentTimeMillis() - start;
 					return time;
 				}
 			});
 			tasks.add(task);
 		}
-		
+
 		Set<Long> times = new HashSet<>();
-		for(Future<Long> t : tasks){
+		for (Future<Long> t : tasks) {
 			times.add(t.get());
 		}
 		Long[] timeList = new Long[times.size()];
 		times.toArray(timeList);
 		List<Long> timeStats = Arrays.asList(timeList);
 		Collections.sort(timeStats);
-		for(Long t : timeStats){
+		for (Long t : timeStats) {
 			log.info("time:" + t);
 		}
-		
+
 	}
 
 	private String getTestData() {
-		return ""+System.currentTimeMillis();
+		return "" + System.currentTimeMillis();
 	}
 }

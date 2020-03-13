@@ -9,7 +9,7 @@ public class DefaultConnectionSettings implements ConnectionSettings{
 
 	@Override
 	public String getDerbyConnectionParameter() {
-		return "create=true";
+		return "create=true;";
 	}
 
 }

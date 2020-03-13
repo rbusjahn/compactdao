@@ -1,9 +1,10 @@
 package org.rbusjahn.compactdao.example.app;
 
 import org.rbusjahn.compactdao.ConnectionSettings;
+import org.rbusjahn.compactdao.GenericDao;
 import org.rbusjahn.compactdao.GenericDaoStat;
 
-public class AccountModelDao extends GenericDaoStat<AccountModel> implements IAccountModelDao {
+public class AccountModelDao extends GenericDao<AccountModel> implements IAccountModelDao {
 
 
 	public AccountModelDao(ConnectionSettings settings) {
@@ -12,6 +13,7 @@ public class AccountModelDao extends GenericDaoStat<AccountModel> implements IAc
 
 	public AccountModelDao() {
 		super(AccountModel.class);
+		super.createTable();
 	}
 
 }
